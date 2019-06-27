@@ -1,6 +1,7 @@
 package client
 
 import (
+	"bufio"
 	"fmt"
 	"go-fist/fisttp"
 	"log"
@@ -19,47 +20,56 @@ func NewFistClient(host string, port string) (*FistClient, error) {
 		return nil, err
 	}
 	client := &FistClient{socket: conn}
-	defer func() { client.Exit() }()
 	return client, nil
 }
 
-func (fc *FistClient) dispatchRequest(request fisttp.Request) (*fisttp.Response, error) {
+func (fc *FistClient) dispatchRequest(request fisttp.Request) fisttp.Response {
 	_, err := fc.socket.Write([]byte(request.String()))
 	if err != nil {
 		fmt.Print("Error when writing")
 	}
-	responseBuffer := make([]byte, 1024)
-	_, err = fc.socket.Read(responseBuffer)
+
+	responseBuffer, err := fc.read()
+
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	fmt.Print("ok")
-
-	return nil, nil
-	// response, err := fisttp.ResponseParser(responseBuffer, request)
-	// if err != nil {
-	// 	fmt.Println("Error when parsing response")
-	// 	return nil, fmt.Errorf("Error when parsing response")
-	// }
-	// return response, nil
+	return fisttp.ParseResponse(request.Type(), responseBuffer)
 }
 
-func (fc *FistClient) Index(doc string, payload string) error {
+func (fc *FistClient) read() ([]byte, error) {
+	reader := bufio.NewReader(fc.socket)
+	mBytes, err := reader.ReadBytes('\n')
+	return mBytes, err
+}
+
+func (fc *FistClient) Index(doc string, payload string) bool {
 	request := fisttp.NewIndexRequest(doc, payload)
-	fc.dispatchRequest(request)
-	return nil
+	response := fc.dispatchRequest(request)
+	return response.IsOk()
 }
 
-func (fc *FistClient) Search(payload string) error {
+func (fc *FistClient) Search(payload string) []string {
 	request := fisttp.NewSearchRequest(payload)
-	fc.dispatchRequest(request)
+	response := fc.dispatchRequest(request)
+	if response.IsOk() {
+		sResponse := response.(*fisttp.SearchResponse)
+		return sResponse.Documents
+	}
 	return nil
 }
 
 func (fc *FistClient) Exit() {
+	defer func() {
+		_ = fc.socket.Close()
+	}()
+
 	request := fisttp.NewExitRequest()
-	fc.dispatchRequest(request)
-	fc.socket.Close()
-	os.Exit(0)
+	response := fc.dispatchRequest(request)
+	if response.IsOk() {
+		os.Exit(0)
+		return
+	}
+	os.Exit(1)
 }

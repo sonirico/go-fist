@@ -1,4 +1,4 @@
-// Client package provides the interface to communicate with FIST server
+// Package client provides the interface to communicate with FIST server
 package client
 
 import (

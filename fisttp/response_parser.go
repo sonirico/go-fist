@@ -27,6 +27,9 @@ func parseExitResponse(payload []byte) *ExitResponse {
 	}
 }
 
+// ParseResponse will return the corresponding type of response
+// by given the Verb/Command of the request and resulting body
+// payload from server
 func ParseResponse(verb Verb, payload []byte) Response {
 	switch verb {
 	case INDEX:

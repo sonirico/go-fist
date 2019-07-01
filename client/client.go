@@ -1,9 +1,10 @@
+// Client package provides the interface to communicate with FIST server
 package client
 
 import (
 	"bufio"
 	"fmt"
-	"go-fist/fisttp"
+	"github.com/sonirico/go-fist/fisttp"
 	"log"
 	"net"
 	"os"

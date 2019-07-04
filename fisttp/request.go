@@ -14,7 +14,7 @@ type Request interface {
 type ExitRequest struct{}
 
 func (er *ExitRequest) String() string {
-	return string(EXIT) + "\n"
+	return string(EXIT) + REOL
 }
 
 // Type gets the type of the request. EXIT will be issued
@@ -50,7 +50,7 @@ func (er *IndexRequest) String() string {
 	out.WriteString(er.document)
 	out.WriteString(" ")
 	out.WriteString(er.payload)
-	out.WriteString("\n")
+	out.WriteString(REOL)
 
 	return out.String()
 }
@@ -80,7 +80,7 @@ func (er *SearchRequest) String() string {
 	out.WriteString(string(er.Type()))
 	out.WriteString(" ")
 	out.WriteString(er.payload)
-	out.WriteString("\n")
+	out.WriteString(REOL)
 
 	return out.String()
 }
@@ -92,7 +92,7 @@ func (er *SearchRequest) Type() Verb {
 
 // VersionRequest represents a query to the server in order to
 // find out the version of it
-type VersionRequest struct {}
+type VersionRequest struct{}
 
 // NewVersionRequest returns a newly allocated VersionRequest
 func NewVersionRequest() *VersionRequest {
@@ -105,5 +105,5 @@ func (vr *VersionRequest) Type() Verb {
 }
 
 func (vr *VersionRequest) String() string {
-	return string(VERSION) + "\n"
+	return string(VERSION) + REOL
 }

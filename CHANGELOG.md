@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased - master]
 - Added support for VERSION command
+- Fixed client hanging after sending requests due to bad
+  terminator chars
 
 ## [0.0.1 - 2019-07-03]
 - Added support for EXIT command

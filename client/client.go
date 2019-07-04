@@ -70,6 +70,7 @@ func (fc *FistClient) Search(payload string) []string {
 	return nil
 }
 
+// Version command will pull the server version
 func (fc *FistClient) Version() (string, error) {
 	request := fisttp.NewVersionRequest()
 	response := fc.dispatchRequest(request)

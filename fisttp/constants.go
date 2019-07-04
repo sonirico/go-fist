@@ -10,3 +10,6 @@ const (
 	EXIT         = "EXIT"    // Request to server to terminate the session gracefully
 	VERSION      = "VERSION" // Request the server to get the server version
 )
+
+// REOL marks the end of a request
+const REOL = "\r\n"

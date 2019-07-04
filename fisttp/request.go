@@ -89,3 +89,21 @@ func (er *SearchRequest) String() string {
 func (er *SearchRequest) Type() Verb {
 	return SEARCH
 }
+
+// VersionRequest represents a query to the server in order to
+// find out the version of it
+type VersionRequest struct {}
+
+// NewVersionRequest returns a newly allocated VersionRequest
+func NewVersionRequest() *VersionRequest {
+	return &VersionRequest{}
+}
+
+// Type returns the type of the request. VERSION will be issued
+func (vr *VersionRequest) Type() Verb {
+	return VERSION
+}
+
+func (vr *VersionRequest) String() string {
+	return string(VERSION) + "\n"
+}

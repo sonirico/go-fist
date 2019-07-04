@@ -21,6 +21,7 @@ type FistClient struct {
 // of it.
 func NewFistClient(host string, port string) (*FistClient, error) {
 	conn, err := net.Dial("tcp", net.JoinHostPort(host, port))
+	// TODO: Add support to configure timeout
 	if err != nil {
 		log.Print(err)
 		return nil, err
@@ -67,6 +68,16 @@ func (fc *FistClient) Search(payload string) []string {
 		return sResponse.Documents
 	}
 	return nil
+}
+
+func (fc *FistClient) Version() (string, error) {
+	request := fisttp.NewVersionRequest()
+	response := fc.dispatchRequest(request)
+	if response.IsOk() {
+		vResponse := response.(*fisttp.VersionResponse)
+		return vResponse.GetVersion(), nil
+	}
+	return "", fmt.Errorf("version could not be retrieved")
 }
 
 // Exit command will terminate a connection

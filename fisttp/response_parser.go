@@ -27,6 +27,12 @@ func parseExitResponse(payload []byte) *ExitResponse {
 	}
 }
 
+func parseVersionResponse(payload []byte) *VersionResponse {
+	return &VersionResponse{
+		version: strings.TrimSpace(string(payload)),
+	}
+}
+
 // ParseResponse will return the corresponding type of response
 // by given the Verb/Command of the request and resulting body
 // payload from server
@@ -38,6 +44,8 @@ func ParseResponse(verb Verb, payload []byte) Response {
 		return parseSearchResponse(payload)
 	case EXIT:
 		return parseExitResponse(payload)
+	case VERSION:
+		return parseVersionResponse(payload)
 	}
 	return nil
 }

@@ -49,6 +49,21 @@ func assertSearchResponseEqual(t *testing.T, expected *SearchResponse, actual Re
 	return true
 }
 
+func assertVersionResponseEqual(t *testing.T, expected *VersionResponse, actual Response) bool {
+	actualResponse, ok := actual.(*VersionResponse)
+	if !ok {
+		t.Errorf("wrong response type. want '%T', have '%T'",
+			expected, actualResponse)
+		return false
+	}
+	if expected.GetVersion() != actualResponse.GetVersion() {
+		t.Errorf("wrong version. want '%s', have '%s'",
+			expected.GetVersion(), actualResponse.GetVersion())
+		return false
+	}
+	return true
+}
+
 func assertExitResponseEqual(t *testing.T, expected *ExitResponse, actual Response) bool {
 	if actualResponseType, ok := actual.(*ExitResponse); !ok {
 		t.Errorf("wrong response type. want '%T', have '%T'",
@@ -73,6 +88,8 @@ func assertResponseEqual(t *testing.T, expected Response, actual Response) bool 
 		return assertSearchResponseEqual(t, expectedResponse, actual)
 	case *ExitResponse:
 		return assertExitResponseEqual(t, expectedResponse, actual)
+	case *VersionResponse:
+		return assertVersionResponseEqual(t, expectedResponse, actual)
 	}
 	return true
 }
@@ -103,6 +120,12 @@ func runExitResponseParserTests(t *testing.T, tests []ResponseParserTest) {
 	t.Helper()
 
 	runResponseParserTests(t, EXIT, tests)
+}
+
+func runVersionResponseParserTests(t *testing.T, tests []ResponseParserTest) {
+	t.Helper()
+
+	runResponseParserTests(t, VERSION, tests)
 }
 
 func TestParseIndexResponse(t *testing.T) {
@@ -189,4 +212,23 @@ func TestParseExitResponse(t *testing.T) {
 	}
 
 	runExitResponseParserTests(t, tests)
+}
+
+func TestParseVersionResponse(t *testing.T) {
+	tests := []ResponseParserTest{
+		{
+			"0.0.0",
+			&VersionResponse{
+				version: "0.0.0",
+			},
+		},
+		{
+			" 0.0.0 ",
+			&VersionResponse{
+				version: "0.0.0",
+			},
+		},
+	}
+
+	runVersionResponseParserTests(t, tests)
 }

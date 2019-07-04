@@ -44,3 +44,20 @@ func (er *ExitResponse) responseElement() {}
 func (er *ExitResponse) IsOk() bool {
 	return er.Ok
 }
+
+// VersionResponse carries the version issued by the server
+type VersionResponse struct {
+	version string
+}
+
+// IsOk returns whether a valid version string has been obtained
+func (vr *VersionResponse) IsOk() bool {
+	return len(vr.version) > 0
+}
+
+// GetVersion returns the version from the server response
+func (vr *VersionResponse) GetVersion() string {
+	return vr.version
+}
+
+func (vr *VersionResponse) responseElement() {}

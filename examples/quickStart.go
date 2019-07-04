@@ -7,6 +7,9 @@ import (
 
 func main() {
 	client, _ := fistclient.NewFistClient("localhost", "5575")
+	// Obtain server version
+	version, _ := client.Version()
+	fmt.Println("Server version is " + version)
 	// Index some data
 	client.Index("todo", "wash the car")
 	client.Index("todo", "walk the dog")

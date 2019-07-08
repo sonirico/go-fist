@@ -6,7 +6,11 @@ import (
 )
 
 func main() {
-	client, _ := fistclient.NewFistClient("localhost", "5575")
+	client, err := fistclient.NewFistClient("localhost", "55750")
+	if err != nil {
+		fmt.Println("Connection Error! Is Fist up and running?")
+		return
+	}
 	// Obtain server version
 	version, _ := client.Version()
 	fmt.Println("Server version is " + version)

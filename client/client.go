@@ -5,7 +5,6 @@ import (
 	"bufio"
 	"fmt"
 	"go-fist/fisttp"
-	"log"
 	"net"
 	"os"
 )
@@ -22,8 +21,8 @@ type FistClient struct {
 func NewFistClient(host string, port string) (*FistClient, error) {
 	conn, err := net.Dial("tcp", net.JoinHostPort(host, port))
 	// TODO: Add support to configure timeout
+	// TODO: Add support to configure retries
 	if err != nil {
-		log.Print(err)
 		return nil, err
 	}
 	client := &FistClient{socket: conn}
@@ -33,7 +32,7 @@ func NewFistClient(host string, port string) (*FistClient, error) {
 func (fc *FistClient) dispatchRequest(request fisttp.Request) fisttp.Response {
 	_, err := fc.socket.Write([]byte(request.String()))
 	if err != nil {
-		fmt.Print("Error when writing")
+		fmt.Print(err)
 	}
 
 	responseBuffer, err := fc.read()

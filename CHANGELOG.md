@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased - master]
+- Swap to relative imports
 - Added support for VERSION command
 - Fixed client hanging after sending requests due to bad
   terminator chars

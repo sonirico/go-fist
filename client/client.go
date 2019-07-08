@@ -4,7 +4,7 @@ package client
 import (
 	"bufio"
 	"fmt"
-	"github.com/sonirico/go-fist/fisttp"
+	"go-fist/fisttp"
 	"log"
 	"net"
 	"os"

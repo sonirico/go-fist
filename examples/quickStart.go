@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	fistclient "github.com/sonirico/go-fist/client"
+	fistclient "go-fist/client"
 )
 
 func main() {

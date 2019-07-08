@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"fmt"
 	"go-fist/fisttp"
+	"go-fist/trace"
 	"net"
 	"os"
 )
@@ -13,32 +14,40 @@ import (
 // all the command an user can issue to server
 type FistClient struct {
 	socket net.Conn
+
+	tracer trace.Tracer
 }
 
 // NewFistClient initialises the connection based on program arguments. If the
 // dial cannot be setup, an error will be returned. Otherwise, a pointer to instance
 // of it.
 func NewFistClient(host string, port string) (*FistClient, error) {
-	conn, err := net.Dial("tcp", net.JoinHostPort(host, port))
+	// TODO: Add support to configure a writer for logging
+	tracer := trace.New(os.Stdout)
+	connectionUrl := net.JoinHostPort(host, port)
+	conn, err := net.Dial("tcp", connectionUrl)
 	// TODO: Add support to configure timeout
 	// TODO: Add support to configure retries
 	if err != nil {
+		tracer.Trace("connection error when trying to reach %s. Is Fist server up and running?",
+			connectionUrl)
 		return nil, err
 	}
 	client := &FistClient{socket: conn}
+	client.tracer = tracer
 	return client, nil
 }
 
 func (fc *FistClient) dispatchRequest(request fisttp.Request) fisttp.Response {
 	_, err := fc.socket.Write([]byte(request.String()))
 	if err != nil {
-		fmt.Print(err)
+		fc.tracer.Trace(err)
 	}
 
 	responseBuffer, err := fc.read()
 
 	if err != nil {
-		fmt.Println(err)
+		fc.tracer.Trace(err)
 	}
 
 	return fisttp.ParseResponse(request.Type(), responseBuffer)
@@ -88,6 +97,7 @@ func (fc *FistClient) Exit() {
 
 	request := fisttp.NewExitRequest()
 	response := fc.dispatchRequest(request)
+	fc.tracer.Trace("Bye!")
 	if response.IsOk() {
 		os.Exit(0)
 		return

@@ -73,6 +73,15 @@ func assertExitResponseEqual(t *testing.T, expected *ExitResponse, actual Respon
 	return true
 }
 
+func assertDeleteResponseEqual(t *testing.T, expected *DeleteResponse, actual Response) bool {
+	if actualResponseType, ok := actual.(*DeleteResponse); !ok {
+		t.Errorf("wrong response type. want '%T', have '%T'",
+			expected, actualResponseType)
+		return false
+	}
+	return true
+}
+
 func assertResponseEqual(t *testing.T, expected Response, actual Response) bool {
 	t.Helper()
 
@@ -90,6 +99,8 @@ func assertResponseEqual(t *testing.T, expected Response, actual Response) bool 
 		return assertExitResponseEqual(t, expectedResponse, actual)
 	case *VersionResponse:
 		return assertVersionResponseEqual(t, expectedResponse, actual)
+	case *DeleteResponse:
+		return assertDeleteResponseEqual(t, expectedResponse, actual)
 	}
 	return true
 }
@@ -126,6 +137,12 @@ func runVersionResponseParserTests(t *testing.T, tests []ResponseParserTest) {
 	t.Helper()
 
 	runResponseParserTests(t, VERSION, tests)
+}
+
+func runDeleteResponseParserTests(t *testing.T, tests []ResponseParserTest) {
+	t.Helper()
+
+	runResponseParserTests(t, DELETE, tests)
 }
 
 func TestParseIndexResponse(t *testing.T) {
@@ -231,4 +248,29 @@ func TestParseVersionResponse(t *testing.T) {
 	}
 
 	runVersionResponseParserTests(t, tests)
+}
+
+func TestParseDeleteResponse(t *testing.T) {
+	tests := []ResponseParserTest{
+		{
+			"Key Removed",
+			&DeleteResponse{
+				ok: true,
+			},
+		},
+		{
+			" Key Removed ",
+			&DeleteResponse{
+				ok: true,
+			},
+		},
+		{
+			" whatever nosense",
+			&DeleteResponse{
+				ok: false,
+			},
+		},
+	}
+
+	runDeleteResponseParserTests(t, tests)
 }

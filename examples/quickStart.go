@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	fistclient "go-fist/client"
+	fistClient "go-fist/client"
 )
 
 func main() {
-	client, err := fistclient.NewFistClient("localhost", "55750")
+	client, err := fistClient.NewFistClient("localhost", "5575")
 	if err != nil {
 		fmt.Println("Connection Error! Is Fist up and running?")
 		return
@@ -15,10 +15,15 @@ func main() {
 	version, _ := client.Version()
 	fmt.Println("Server version is " + version)
 	// Index some data
-	client.Index("todo", "wash the car")
-	client.Index("todo", "walk the dog")
+	client.Index("articles", "a an the")
+	client.Index("TODO", "wash the car")
+	client.Index("TODO", "walk the dog")
 	client.Index("podcasts", "DSE - Daily software engineering")
-	// Search for it
+	// Search for "the" keyword
 	documents := client.Search("the")
-	fmt.Println(documents) // ["todo"]
+	fmt.Println(documents) // ["articles", "TODO"]
+	// Not needing articles?
+	client.Delete("the")
+	documents = client.Search("the")
+	fmt.Println(documents) // []
 }

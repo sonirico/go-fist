@@ -33,6 +33,12 @@ func parseVersionResponse(payload []byte) *VersionResponse {
 	}
 }
 
+func parseDeleteResponse(payload []byte) *DeleteResponse {
+	return &DeleteResponse{
+		ok: strings.TrimSpace(string(payload)) == "Key Removed",
+	}
+}
+
 // ParseResponse will return the corresponding type of response
 // by given the Verb/Command of the request and resulting body
 // payload from server
@@ -42,6 +48,8 @@ func ParseResponse(verb Verb, payload []byte) Response {
 		return parseIndexResponse(payload)
 	case SEARCH:
 		return parseSearchResponse(payload)
+	case DELETE:
+		return parseDeleteResponse(payload)
 	case EXIT:
 		return parseExitResponse(payload)
 	case VERSION:

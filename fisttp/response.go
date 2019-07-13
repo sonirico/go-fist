@@ -61,3 +61,15 @@ func (vr *VersionResponse) GetVersion() string {
 }
 
 func (vr *VersionResponse) responseElement() {}
+
+// DeleteResponse holds whether keyword deletion has been successful
+type DeleteResponse struct {
+	ok bool
+}
+
+// IsOk returns whether deletion has been rightly performed
+func (dr *DeleteResponse) IsOk() bool {
+	return dr.ok
+}
+
+func (dr *DeleteResponse) responseElement() {}

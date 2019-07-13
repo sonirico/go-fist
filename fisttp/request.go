@@ -90,6 +90,34 @@ func (er *SearchRequest) Type() Verb {
 	return SEARCH
 }
 
+// DeleteRequest requests the action of keyword removal. Will
+// apply to all documents
+type DeleteRequest struct {
+	keywords string
+}
+
+// NewDeleteRequest returns a newly allocated DeleteRequest which
+// will carry the keywords to be deleted
+func NewDeleteRequest(payload string) *DeleteRequest {
+	return &DeleteRequest{keywords: payload}
+}
+
+// Type gets the type of the request. DELETE will be issued
+func (dr *DeleteRequest) Type() Verb {
+	return DELETE
+}
+
+func (dr *DeleteRequest) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(string(dr.Type()))
+	out.WriteString(" ")
+	out.WriteString(dr.keywords)
+	out.WriteString(REOL)
+
+	return out.String()
+}
+
 // VersionRequest represents a query to the server in order to
 // find out the version of it
 type VersionRequest struct{}

@@ -69,6 +69,13 @@ func (fc *FistClient) Search(payload string) []string {
 	return nil
 }
 
+// Delete command will remove the given keyword set from all documents
+func (fc *FistClient) Delete(payload string) bool {
+	request := fisttp.NewDeleteRequest(payload)
+	response := fc.dispatchRequest(request)
+	return response.IsOk()
+}
+
 // Version command will pull the server version
 func (fc *FistClient) Version() (string, error) {
 	request := fisttp.NewVersionRequest()

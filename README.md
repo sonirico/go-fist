@@ -18,14 +18,30 @@ go get -u github.com/sonirico/go-fist
 ## Examples
 
 ```go
-client, _ := fistclient.NewFistClient("localhost", "5575")
+import fistClient "github.com/sonirico/go-fist"
+
+// ...
+
+client, err := fistClient.NewFistClient("localhost", "5575")
+if err != nil {
+    fmt.Println("Connection Error! Is Fist up and running?")
+    return
+}
+// Obtain server version
+version, _ := client.Version()
+fmt.Println("Server version is " + version)
 // Index some data
-client.Index("todo", "wash the car")
-client.Index("todo", "walk the dog")
+client.Index("articles", "a an the")
+client.Index("TODO", "wash the car")
+client.Index("TODO", "walk the dog")
 client.Index("podcasts", "DSE - Daily software engineering")
-// Search for it
+// Search for "the" keyword
 documents := client.Search("the")
-fmt.Println(documents) // ["todo"]
+fmt.Println(documents) // ["articles", "TODO"]
+// Not needing articles?
+client.Delete("the")
+documents = client.Search("the")
+fmt.Println(documents) // []
 ```
 
 More detailed examples can be found under the `./examples` subpackage
